@@ -1,8 +1,10 @@
-const mongoose = require("mongoose"); // Erase if already required\
-const DOC_NAME='test'
-const COLLECT_NAME='user'
+// const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose"); 
 
-var userSchema = new mongoose.Schema({
+const DOC_NAME='test'
+const COLLECT_NAME='User'
+
+var userSchema = Schema({
   name: {
     type: String,
     required: true,
@@ -21,7 +23,7 @@ var userSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["active", "inactive"],
-    required: true,
+    required: false,
   },
   verify: {
     type: Boolean,
@@ -37,4 +39,4 @@ var userSchema = new mongoose.Schema({
 });
 
 //Export the model
-module.exports = mongoose.model(DOC_NAME, userSchema);
+module.exports = model(DOC_NAME, userSchema);
