@@ -2,7 +2,8 @@
 const mongoose = require("mongoose");
 const {db: {host, name, port}} = require('../configs/config.mongobd')
 const { checkOverload } = require("../helpers/check.connect");
-const connString = `mongodb://${host}:${port}/${name}`;
+// const connString = `mongodb://${host}:${port}/${name}`;
+const connString = `mongodb+srv://dev:GGtABYkYI9eq1Eoa@nodejs-cluster.lv98edw.mongodb.net/`;
 
 
 class Database {
@@ -19,7 +20,7 @@ class Database {
     mongoose
       .connect(connString)
       .then((_) => {
-        console.log(`Connect Success :)))`);
+        console.log(`Connect Mongodb Success :)))`);
       })
       .catch((err) => console.log(`Err Connect !!!`));
   }

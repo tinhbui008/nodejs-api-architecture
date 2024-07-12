@@ -1,11 +1,10 @@
-require('dotenv').config()
-const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet'); 
-var compression = require('compression')
-const { countCounnect, checkOverload } = require('./helpers/check.connect');
-const bodyParser = require('body-parser');
-
+require("dotenv").config();
+const express = require("express");
+const morgan = require("morgan");
+const helmet = require("helmet");
+var compression = require("compression");
+const { countCounnect, checkOverload } = require("./helpers/check.connect");
+const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -21,28 +20,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //db
-require('./dbs/mongodb.proc')
+require("./dbs/mongodb.proc");
 // checkOverload()
-
-//routes
-// app.get('/', (req, res, next) => {
-//     const strCompress = 'HELLO'
-
-//     return res.status(200).json({
-//         message: 'HELLO WORLD :)))',
-//         // metadata: strCompress.repeat(1000000)
-//     });
-// });
-
-// app.get('/home', (req, res, next) => {
-//     return res.status(200).json({
-//         message: 'HOME :)))'
-//     });
-// });
-
+app.use("/", require("./routes/index"));
 
 //handle error
+app.use((req, res, next) => {
+  const error = new Error("Not Found");
+  error.status = 404;
+  next(error);
+});
 
-app.use('/', require('./routes/index'))
+app.use((error, req, res, next) => {
+  const statusCode = error.status || 500
+  return res.status(statusCode).json({
+    status: 'error',
+    code: statusCode,
+    message: error.message || 'Internal Server Error'
+  });
+});
 
 module.exports = app;

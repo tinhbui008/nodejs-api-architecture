@@ -1,15 +1,13 @@
 "use strict";
 
-const exress = require("express");
-const router = exress.Router();
+const express = require("express");
+const { apiKey, permission } = require("../auth/checkAuth");
+const router = express.Router();
 
-const { apiKey, permission, xyz } = require("../auth/checkAuth");
-
-router.use(apiKey);
-router.use(permission("0001"), (req, res) => {
-    console.log('permissionnnnnnnnnn')
-});
+// Use the permission middleware
+router.use(apiKey)
+router.use(permission('000'));
 
 router.use("/v1/api", require("./access"));
 
-module.exports = router
+module.exports = router;
