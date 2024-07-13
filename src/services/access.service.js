@@ -23,9 +23,7 @@ class AccessService {
     const accountExist = await findByEmail({ email });
     if (!accountExist) throw new BadRequestError("account does not exist");
 
-    console.log("passwordddd::::", password);
     const match = await bcrypt.compare(password, accountExist.password);
-    console.log("matchhhhhhh::::", match);
 
     if (!match) throw new AuthFailureError("Authen error");
 
@@ -40,9 +38,9 @@ class AccessService {
 
     await KeyTokenService.createKeyToken({
       userId: accountExist._id,
-      refreshToken: tokens.refreshToken,
-      privateKey,
       publicKey,
+      privateKey,
+      refreshToken: tokens.refreshToken
     });
 
     return {
