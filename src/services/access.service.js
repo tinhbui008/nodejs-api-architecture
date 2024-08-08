@@ -13,9 +13,9 @@ const {
 const { findByEmail } = require("./account.service");
 
 const Roles = {
-  SuperAdmin: "admin",
+  SuperAdmin: "superadmin",
   Admin: "admin",
-  Customer: "admin",
+  Customer: "customer",
 };
 
 class AccessService {
@@ -28,10 +28,12 @@ class AccessService {
     if (!match) throw new AuthFailureError("Authen error");
 
     const privateKey = crypto.randomBytes(64).toString("hex");
+
+    const { _id: userId } = accountExist;
     const publicKey = crypto.randomBytes(64).toString("hex");
 
     const tokens = await createTokenPair(
-      { userId: accountExist._id, email },
+      { userId, email },
       publicKey,
       privateKey
     );
@@ -40,7 +42,7 @@ class AccessService {
       userId: accountExist._id,
       publicKey,
       privateKey,
-      refreshToken: tokens.refreshToken
+      refreshToken: tokens.refreshToken,
     });
 
     return {
@@ -52,11 +54,11 @@ class AccessService {
     };
   };
 
-  static signUp = async ({ name, email, password }) => {
+  static signUp = async ({ name, email, password, roles }) => {
     const existUser = await userModel.findOne({ email }).lean();
 
     if (existUser) {
-      throw new BadRequestError("Error: Account already exists");
+      throw new BadRequestError("Error: Accounttttttt already exists");
     }
 
     const passwordhash = await bcrypt.hash(password, 10);
@@ -65,7 +67,8 @@ class AccessService {
       name,
       email,
       password: passwordhash,
-      roles: [Roles.SuperAdmin],
+      // roles: [Roles.SuperAdmin],
+      roles: roles,
     });
 
     if (newUser) {
@@ -106,7 +109,7 @@ class AccessService {
         code: "201",
         metadata: {
           user: getInfoData({
-            fiels: ["_id", "name", "email"],
+            fiels: ["_id", "name", "email", "roles"],
             object: newUser,
           }),
           tokens,
@@ -118,6 +121,12 @@ class AccessService {
       code: "yyy",
       message: "AHIHI",
     };
+  };
+
+  static logout = async ({ keyStore }) => {
+    const delKey = await KeyTokenService.removeKeyByUserId(keyStore._id);
+    console.log($delKey);
+    return delKey;
   };
 }
 

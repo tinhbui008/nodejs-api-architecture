@@ -28,8 +28,7 @@ var keyTokenSchema = Schema(
     },
     refreshToken: {
       type: String,
-      required: true,
-      default: [],
+      required: true
     },
   },
   {
