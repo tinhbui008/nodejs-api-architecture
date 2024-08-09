@@ -1,10 +1,13 @@
 "use strict";
 const mongoose = require("mongoose");
-const {db: {host, name, port}} = require('../configs/config.mongobd')
+const {
+  db: { host, name, port, username, password },
+} = require("../configs/config.mongobd");
 const { checkOverload } = require("../helpers/check.connect");
-const connString = `mongodb://${host}:${port}/${name}`;
-// const connString = `mongodb+srv://dev:GGtABYkYI9eq1Eoa@nodejs-cluster.lv98edw.mongodb.net/`;
-
+// const connString = `mongodb://${username}:${password}:${host}:${port}/${name}`;
+// const connString = `mongodb://${host}:${port}/${name}`;
+console.log(connString);
+const connString = `mongodb+srv://dev:GGtABYkYI9eq1Eoa@nodejs-cluster.lv98edw.mongodb.net/`;
 
 class Database {
   constructor() {

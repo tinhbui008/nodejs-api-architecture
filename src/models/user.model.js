@@ -1,8 +1,8 @@
 // const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 
-const DOC_NAME = "test";
-const COLLECT_NAME = "User";
+const DOC_NAME = "User";
+const COLLECT_NAME = "Users";
 
 var userSchema = Schema(
   {

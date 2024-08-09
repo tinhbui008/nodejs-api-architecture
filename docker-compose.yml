@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+
+  mongodb:
+    image: mongo:5.0.2
+    restart: unless-stopped
+    env_file: ./.env
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=dev
+    #   - MONGO_INITDB_ROOT_PASSWORD=123456
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
+
+
+  threelab-api:
+    depends_on:
+      - mongodb
+    build: .
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $PRO_APP_PORT:$PRO_APP_PORT
+    environment:
+      - DB_HOST=mongodb
+      # - PRO_DB_USERNAME=dev
+      # - PRO_DB_PASSWORD=123456
+      - PRO_DB_NAME=test
+      - PRO_DB_PORT=27017
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:

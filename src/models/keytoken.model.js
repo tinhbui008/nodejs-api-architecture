@@ -14,13 +14,11 @@ var keyTokenSchema = Schema(
     },
     publicKey: {
       type: String,
-      required: true,
-      unique: true,
+      required: true
     },
     privateKey: {
       type: String,
-      required: true,
-      unique: true,
+      required: true
     },
     refreshTokensUsed: {
       type: Array,

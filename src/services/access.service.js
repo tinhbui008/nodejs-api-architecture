@@ -4,11 +4,13 @@ const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const crypto = require("node:crypto");
 const KeyTokenService = require("./keyToken.service");
-const { createTokenPair } = require("../auth/authUtils");
+const { createTokenPair, verifyJWT } = require("../auth/authUtils");
 const { getInfoData } = require("../ultils");
 const {
   BadRequestError,
   ConflictRequestError,
+  ForbiddenError,
+  AuthFailureError,
 } = require("../core/error.response");
 const { findByEmail } = require("./account.service");
 
@@ -124,9 +126,51 @@ class AccessService {
   };
 
   static logout = async ({ keyStore }) => {
-    const delKey = await KeyTokenService.removeKeyByUserId(keyStore._id);
-    console.log($delKey);
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
     return delKey;
+  };
+
+  static handlerRefreshToken = async (refreshToken) => {
+    const foundToken = await KeyTokenService.findByRefreshTokenUsed(
+      refreshToken
+    );
+    console.log(`foundToken:::::::::::: ${foundToken}`);
+    if (foundToken) {
+      const { userId, email } = await verifyJWT(
+        refreshToken,
+        foundToken.privateKey
+      );
+
+      await KeyTokenService.deleteKeyById(userId);
+      throw new ForbiddenError(
+        "Something went wrong!!! Please try login again"
+      );
+    }
+
+    const holdTokenKey = await KeyTokenService.findByRefreshToken(refreshToken);
+    if (!holdTokenKey) throw new AuthFailureError("User 1 not registered");
+
+    const { userId, email } = await verifyJWT(
+      refreshToken,
+      holdTokenKey.privateKey
+    );
+
+    const foundUser = await findByEmail(email);
+    if (foundUser) throw new AuthFailureError("User 2 not registered");
+
+    const tokens = await createTokenPair(
+      { userId, email },
+      holdTokenKey.publicKey,
+      holdTokenKey.privateKey
+    );
+
+    //update token
+    await KeyTokenService.updateOne(holdTokenKey);
+
+    return {
+      user: { userId, email },
+      tokens,
+    };
   };
 }
 

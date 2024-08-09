@@ -4,14 +4,10 @@ const AccessService = require("../services/access.service");
 
 class AccessController {
   logout = async (req, res, next) => {
-    console.log(`req.keyStore:::::::::: ${req.keyStore}`);
-
-    return res.status(200).json({ message: "Access" });
-
-    // new SuccessResponse({
-    //   message: "Logout Success",
-    //   metadata: await AccessService.logout(req.keyStore),
-    // }).send(res);
+    new SuccessResponse({
+      message: "Logout Success",
+      metadata: await AccessService.logout({ keyStore: req.keyStore }),
+    }).send(res);
   };
 
   login = async (req, res, next) => {
@@ -34,6 +30,13 @@ class AccessController {
     } catch (error) {
       next(error);
     }
+  };
+
+  handlerRefreshToken = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Get token success",
+      metadata: await AccessService.handlerRefreshToken(req.body.refreshToken),
+    }).send(res);
   };
 }
 

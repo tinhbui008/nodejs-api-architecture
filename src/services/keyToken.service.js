@@ -1,6 +1,7 @@
 "use strict";
-const { Types } = require("mongoose");
+// const { Types } = require("mongoose");
 const keytokenModel = require("../models/keytoken.model");
+const { ObjectId } = require("mongoose").Types;
 
 class KeyTokenService {
   static createKeyToken = async ({
@@ -40,11 +41,36 @@ class KeyTokenService {
     }
   };
 
-  static findByUserId = async ({ userId }) => {
-    var id = new Types.ObjectId(userId);
-    var user = keytokenModel.findOne(userId);
-    console.log(`userrrrrrrr::::: ${user}`);
-    return await keytokenModel.findOne({ user: id });
+  static findByUserId = async (userId) => {
+    return await keytokenModel.findOne({ user: new ObjectId(userId) }).lean();
+  };
+
+  static removeKeyById = async (id) => {
+    return await keytokenModel.deleteOne(id);
+  };
+
+  static findByRefreshTokenUsed = async (refreshToken) => {
+    console.log(`findByRefreshTokenUsed:::::::::::: ${refreshToken}`);
+
+    return await keytokenModel
+      .findOne({ refreshTokensUsed: refreshToken })
+      .lean();
+  };
+
+  static findByRefreshToken = async (refreshToken) => {
+    return await keytokenModel.findOne({ refreshToken: refreshToken });
+  };
+
+  static deleteKeyById = async (userId) => {
+    return await keytokenModel.deleteOne({ user: userId });
+  };
+
+  static updateOne = async (holdTokenKey) => {
+    const filter = { user: holdTokenKey.user };
+    const update = {
+      $addToSet: { refreshTokensUsed: holdTokenKey.refreshToken },
+    };
+    return await keytokenModel.updateOne(filter, update);
   };
 }
 
