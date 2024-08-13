@@ -4,10 +4,8 @@ const {
   db: { host, name, port, username, password },
 } = require("../configs/config.mongobd");
 const { checkOverload } = require("../helpers/check.connect");
-// const connString = `mongodb://${username}:${password}:${host}:${port}/${name}`;
-// const connString = `mongodb://${host}:${port}/${name}`;
-console.log(connString);
-const connString = `mongodb+srv://dev:GGtABYkYI9eq1Eoa@nodejs-cluster.lv98edw.mongodb.net/`;
+// const connString = `mongodb://${username}:${password}@${host}:${port}/${name}`;
+const connString = `mongodb://${host}:${port}/${name}`;
 
 class Database {
   constructor() {
@@ -25,7 +23,7 @@ class Database {
       .then((_) => {
         console.log(`Connect Mongodb Success :)))`);
       })
-      .catch((err) => console.log(`Err Connect !!!`));
+      .catch((err) => console.log(`Err Connect !!! ${err}`));
   }
 
   static getInstance() {

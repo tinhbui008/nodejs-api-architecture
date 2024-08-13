@@ -2,35 +2,41 @@ version: "3.8"
 
 services:
 
-  mongodb:
-    image: mongo:5.0.2
-    restart: unless-stopped
-    env_file: ./.env
-    # environment:
-    #   - MONGO_INITDB_ROOT_USERNAME=dev
-    #   - MONGO_INITDB_ROOT_PASSWORD=123456
-    ports:
-      - 27017:27017
-    volumes:
-      - db:/data/db
-
-
   threelab-api:
-    depends_on:
-      - mongodb
-    build: .
+    image: threelab-api:v1
+    container_name: node-api
+    build: 
+       context: .
+       dockerfile: Dockerfile
     restart: unless-stopped
-    env_file: ./.env
-    ports:
-      - $PRO_APP_PORT:$PRO_APP_PORT
     environment:
-      - DB_HOST=mongodb
-      # - PRO_DB_USERNAME=dev
-      # - PRO_DB_PASSWORD=123456
-      - PRO_DB_NAME=test
-      - PRO_DB_PORT=27017
-    stdin_open: true
-    tty: true
+      - PRO_APP_PORT:3058
+      # - MONGODB_URI:mongodb+srv://mongo_db:27017/test
+      - PRO_DB_NAME:test
+      - PRO_DB_HOST:mongo_db
+      - PRO_DB_PORT:27017
+    ports:
+      - 4000:3058
+    depends_on:
+      - mongo_db
+    networks:
+      - nodejsapi-network
 
+
+  mongo_db:
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - 2717:27017
+    networks:
+      - nodejsapi-network
+    volumes:
+      - db:/data/d
+
+networks:
+  nodejsapi-network:
+    driver: bridge
 volumes:
-  db:
+  db: {}
+
+

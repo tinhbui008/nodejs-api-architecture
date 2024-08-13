@@ -3,6 +3,10 @@ const { CREATED, OK, SuccessResponse } = require("../core/success.response");
 const AccessService = require("../services/access.service");
 
 class AccessController {
+  getaccount = async (req, res, next) => {
+    return res.status(200).json({ user: "user" });
+  };
+
   logout = async (req, res, next) => {
     new SuccessResponse({
       message: "Logout Success",
