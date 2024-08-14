@@ -1,5 +1,5 @@
 const app = require('./src/app');
-const {app: {port}} = require('./src/configs/config.mongobd')
+const {app: {port}} = require('./src/configs/config.mongodb')
 
 // const PORT = process.env.PORT || 3000;
 

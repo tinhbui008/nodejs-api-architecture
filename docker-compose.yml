@@ -11,7 +11,6 @@ services:
     restart: unless-stopped
     environment:
       - PRO_APP_PORT:3058
-      # - MONGODB_URI:mongodb+srv://mongo_db:27017/test
       - PRO_DB_NAME:test
       - PRO_DB_HOST:mongo_db
       - PRO_DB_PORT:27017
