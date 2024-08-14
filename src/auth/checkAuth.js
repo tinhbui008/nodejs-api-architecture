@@ -16,11 +16,12 @@ const apiKey = async (req, res, next) => {
         status: 403,
       });
     }
-
+    console.log("API KEY:::::::::::: ", key);
     const objKey = await findById(key);
+    
     if (!objKey) {
       return res.status(403).json({
-        message: "Forbidden 02 !!!",
+        message: "Forbidden 03 !!!",
         status: 403,
       });
     }

@@ -92,5 +92,5 @@ var electronicSchema = new mongoose.Schema(
 module.exports = {
   product: model(DOC_NAME, productSchema),
   clothing: model("Clothing", clothesSchema),
-  electronic: model("Electronic", clothesSchema),
+  electronic: model("Electronic", electronicSchema),
 };
