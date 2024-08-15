@@ -21,6 +21,40 @@ const Roles = {
 };
 
 class AccessService {
+  static handlerRefreshTokenV2 = async ({ keyStore, user, refreshToken }) => {
+    const { userId, email } = user;
+    console.log(`handlerRefreshTokenV2 email::: ${user.email}`);
+    console.log(`handlerRefreshTokenV2 userId::: ${user.userId}`);
+
+
+
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
+      await KeyTokenService.deleteKeyById(userId);
+      throw new ForbiddenError(
+        "Something went wrong!!! Please try login again"
+      );
+    }
+
+    if (keyStore.refreshToken !== refreshToken)
+      throw new AuthFailureError("User 1 not registered");
+
+    const foundUser = await findByEmail({email: email});
+    if (!foundUser) throw new AuthFailureError("User 2 not registered");
+
+    const tokens = await createTokenPair(
+      { userId, email },
+      keyStore.publicKey,
+      keyStore.privateKey
+    );
+
+    await KeyTokenService.updateOne(keyStore);
+
+    return {
+      user,
+      tokens,
+    };
+  };
+
   static login = async ({ email, password, refreshToken = null }) => {
     const accountExist = await findByEmail({ email });
     if (!accountExist) throw new BadRequestError("account does not exist");
@@ -74,18 +108,6 @@ class AccessService {
     });
 
     if (newUser) {
-      // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-      //   modulusLength: 4096,
-      //   publicKeyEncoding: {
-      //     type: 'pkcs1',
-      //     format: 'pem'
-      //   },
-      //   privateKeyEncoding: {
-      //     type: 'pkcs1',
-      //     format: 'pem'
-      //   }
-      // });
-
       const privateKey = crypto.randomBytes(64).toString("hex");
       const publicKey = crypto.randomBytes(64).toString("hex");
 
@@ -98,8 +120,6 @@ class AccessService {
       });
 
       if (!keyStore) throw new BadRequestError("Error: KeyStore string error");
-
-      // const publicKeyObj = crypto.createPublicKey(publicKeyString)
 
       const tokens = await createTokenPair(
         { userId: newUser._id, email },

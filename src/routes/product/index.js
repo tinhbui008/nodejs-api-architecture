@@ -7,7 +7,7 @@ const { authentication } = require("../../auth/authUtils");
 const router = exress.Router();
 
 // //authentication
-// router.use(authentication);
+router.use(authentication);
 router.post("/", asyncHandler(productController.createProduct));
 
 module.exports = router;

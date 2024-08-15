@@ -7,10 +7,10 @@ class ProductFactory {
   static async createProduct(type, payload) {
     switch (type) {
       case "Electronic":
-        return new Electronic(payload);
+        console.log(`Electronic create new::: ${type}`);
+        return new Electronic(payload).createProduct();
 
       case "Clothing":
-        console.log(`Clothingssssssssss`);
         return new Clothing(payload).createProduct();
 
       default:
@@ -40,8 +40,8 @@ class Product {
     this.product_attributes = product_attributes;
   }
 
-  async createProduct() {
-    return product.create(this);
+  async createProduct(product_id) {
+    return await product.create({ ...this, _id: product_id });
   }
 }
 
@@ -49,22 +49,22 @@ class Clothing extends Product {
   async createProduct() {
     const newClothing = await clothing.create(this.product_attributes);
     if (!newClothing) throw new BadRequestError("create new clothing error");
-
     const newProduct = await super.createProduct();
     if (!newProduct) throw new BadRequestError("create new product error");
-
-    return newProduct;
+    return newClothing;
   }
 }
 
 class Electronic extends Product {
   async createProduct() {
-    const newClothing = await electronic.createProduct(this.product_attributes);
-    if (!newClothing) throw new BadRequestError("Forbidden");
+    const newElectronic = await electronic.create({
+      ...this.product_attributes,
+      product_createdby: this.product_createdby,
+    });
 
-    const newProduct = await super.createProduct();
-    if (!newProduct) throw new BadRequestError("Forbidden");
-
+    if (!newElectronic) throw new BadRequestError("create new clothing error");
+    const newProduct = await super.createProduct(newElectronic._id);
+    if (!newProduct) throw new BadRequestError("create new product error");
     return newProduct;
   }
 }

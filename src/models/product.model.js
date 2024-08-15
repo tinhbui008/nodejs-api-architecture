@@ -28,7 +28,7 @@ var productSchema = Schema(
       required: true,
     },
     product_type: {
-      type: Number,
+      type: String,
       required: true,
       enum: ["Electronic", "Clothing", "Furniture", "Toys"],
     },
@@ -80,6 +80,10 @@ var electronicSchema = new mongoose.Schema(
     },
     color: {
       type: String,
+    },
+    product_createdby: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {

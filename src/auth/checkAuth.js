@@ -16,8 +16,9 @@ const apiKey = async (req, res, next) => {
         status: 403,
       });
     }
-    console.log("API KEY:::::::::::: ", key);
+    
     const objKey = await findById(key);
+    console.log("API objKey:::::::::::: ", objKey);
     
     if (!objKey) {
       return res.status(403).json({
