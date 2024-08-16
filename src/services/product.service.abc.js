@@ -7,6 +7,7 @@ const {
   furniture,
 } = require("../models/product.model");
 const { BadRequestError } = require("../core/error.response");
+const { findAllDraftForShop } = require("../models/repositories/product.repo");
 
 class ProductFactory {
   static productRegistry = {};
@@ -15,12 +16,19 @@ class ProductFactory {
     ProductFactory.productRegistry[type] = classRef;
   }
 
+  static async findAllDraftForShop(product_createdby, limit = 50, skip = 0) {
+    console.log(`product_createdbyyyyyyyyyyyyy:::: ${product_createdby}`);
+    const query = { product_createdby, isDraft: true };
+    return await findAllDraftForShop({ query, limit, skip });
+  }
+
   static async createProduct(type, payload) {
     const productClass = ProductFactory.productRegistry[type];
+
     if (!productClass)
       throw new BadRequestError(`Invalid product type ${type}`);
 
-    return new productClass[payload].createProduct();
+    return new productClass(payload).createProduct();
 
     // switch (type) {
     //   case "Electronic":
@@ -68,7 +76,7 @@ class Clothing extends Product {
     if (!newClothing) throw new BadRequestError("create new clothing error");
     const newProduct = await super.createProduct();
     if (!newProduct) throw new BadRequestError("create new product error");
-    return newClothing;
+    return newProduct;
   }
 }
 
@@ -102,9 +110,8 @@ class Furniture extends Product {
   }
 }
 
-
-ProductFactory.registerProductType['Clothing', Clothing]
-ProductFactory.registerProductType['Electronics', Electronics]
-ProductFactory.registerProductType['Funiture', Furniture]
+ProductFactory.registerProductType("Clothing", Clothing);
+ProductFactory.registerProductType("Electronic", Electronic);
+ProductFactory.registerProductType("Furniture", Furniture);
 
 module.exports = ProductFactory;
