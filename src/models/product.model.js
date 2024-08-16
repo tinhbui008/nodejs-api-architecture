@@ -92,9 +92,34 @@ var electronicSchema = new mongoose.Schema(
   }
 );
 
+
+var furnitureSchema = new mongoose.Schema(
+  {
+    manufacturer: {
+      type: String,
+      required: true,
+    },
+    model: {
+      type: String,
+    },
+    color: {
+      type: String,
+    },
+    product_createdby: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+    collection: "Electronics",
+  }
+);
+
 //Export the model
 module.exports = {
   product: model(DOC_NAME, productSchema),
   clothing: model("Clothing", clothesSchema),
   electronic: model("Electronic", electronicSchema),
+  furniture: model("Furniture", furnitureSchema),
 };
