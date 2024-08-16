@@ -5,8 +5,8 @@ const {
 } = require("../configs/config.mongodb");
 const { checkOverload } = require("../helpers/check.connect");
 // const connString = `mongodb://${username}:${password}@${host}:${port}/${name}`;
-const connString = `mongodb://${host}:${port}/${name}`;
-// const connString = `mongodb://mongo_db:${port}/${name}`;
+// const connString = `mongodb://${host}:${port}/${name}`;
+const connString = `mongodb://mongo_db:${port}/${name}`;
 
 class Database { 
   constructor() {
