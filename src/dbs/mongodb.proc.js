@@ -5,7 +5,11 @@ const {
 } = require("../configs/config.mongodb");
 const { checkOverload } = require("../helpers/check.connect");
 // const connString = `mongodb://${username}:${password}@${host}:${port}/${name}`;
+
+//local
 const connString = `mongodb://${host}:${port}/${name}`;
+
+//dev container environment
 // const connString = `mongodb://mongo_db:${port}/${name}`;
 
 class Database { 

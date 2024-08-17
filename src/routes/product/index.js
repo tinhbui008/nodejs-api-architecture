@@ -10,4 +10,7 @@ const router = exress.Router();
 router.use(authentication);
 router.post("/", asyncHandler(productController.createProduct));
 
+//GET
+router.get("/getalldraftforshop", asyncHandler(productController.getAllDraftForCreatedBy));
+
 module.exports = router;
