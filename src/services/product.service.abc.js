@@ -7,7 +7,13 @@ const {
   furniture,
 } = require("../models/product.model");
 const { BadRequestError } = require("../core/error.response");
-const { findAllDraftForShop } = require("../models/repositories/product.repo");
+const {
+  findAllDraftForShop,
+  publishedProductByCreatedByAndProductId,
+  findAllPublishedForShop,
+  unPublishedProductByCreatedByAndProductId,
+  searchProductByCreated,
+} = require("../models/repositories/product.repo");
 
 class ProductFactory {
   static productRegistry = {};
@@ -16,11 +22,49 @@ class ProductFactory {
     ProductFactory.productRegistry[type] = classRef;
   }
 
-  static async findAllDraftForShop(product_createdby, limit = 50, skip = 0) {
-    console.log(`product_createdbyyyyyyyyyyyyy:::: ${product_createdby}`);
+  //GET
+  static async findAllDraftForShop({
+    product_createdby,
+    limit = 50,
+    skip = 0,
+  }) {
     const query = { product_createdby, isDraft: true };
     return await findAllDraftForShop({ query, limit, skip });
   }
+
+  static async findAllPublishedForShop({
+    product_createdby,
+    limit = 50,
+    skip = 0,
+  }) {
+    const query = { product_createdby, isPublished: true };
+    return await findAllPublishedForShop({ query, limit, skip });
+  }
+
+  static async searchProductByCreated({ keySearch }) {
+    return await searchProductByCreated({ keySearch });
+  }
+
+  //PUT
+  static publishedProductByCreatedBy = async ({
+    product_createdby,
+    product_id,
+  }) => {
+    return await publishedProductByCreatedByAndProductId({
+      product_createdby,
+      product_id,
+    });
+  };
+
+  static unPublishedProductByCreatedBy = async ({
+    product_createdby,
+    product_id,
+  }) => {
+    return await unPublishedProductByCreatedByAndProductId({
+      product_createdby,
+      product_id,
+    });
+  };
 
   static async createProduct(type, payload) {
     const productClass = ProductFactory.productRegistry[type];

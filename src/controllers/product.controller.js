@@ -5,14 +5,6 @@ const ProductServiceABC = require("../services/product.service.abc");
 
 class ProductController {
   createProduct = async (req, res, next) => {
-    // new SuccessResponse({
-    //   message: "Create New Product Success",
-    //   metadata: await ProductService.createProduct(req.body.product_type, {
-    //     ...req.body,
-    //     product_createdby: req.user.userId,
-    //   }),
-    // }).send(res);
-
     new SuccessResponse({
       message: "Create New Product Success",
       metadata: await ProductServiceABC.createProduct(req.body.product_type, {
@@ -22,21 +14,67 @@ class ProductController {
     }).send(res);
   };
 
+  //POST
+  publishedProduct = async (req, res, next) => {
+    console.log("Published Productttttttt");
+    new SuccessResponse({
+      message: "Published Product Success",
+      metadata: await ProductServiceABC.publishedProductByCreatedBy({
+        product_createdby: req.user.userId,
+        product_id: req.params.id,
+      }),
+    }).send(res);
+  };
+
+  //POST
+  unPublishedProduct = async (req, res, next) => {
+    console.log("UnPublished Productttttttt");
+    new SuccessResponse({
+      message: "UnPublished Product Success",
+      metadata: await ProductServiceABC.unPublishedProductByCreatedBy({
+        product_createdby: req.user.userId,
+        product_id: req.params.id,
+      }),
+    }).send(res);
+  };
+
   /**
-   * Get All Product Draft For Createdby
-   * @param {Number} limit 
-   * @param {Number} skip 
-   * @return {JSON} res 
+   * Get All Product Draft For CreatedBy
+   * @param {Number} limit
+   * @param {Number} skip
+   * @return {JSON} res
    */
   getAllDraftForCreatedBy = async (req, res, next) => {
     new SuccessResponse({
       message: "Get Products Draft Success",
-      metadata: await ProductServiceABC.findAllDraftForShop(
-        req.body.product_type,
-        {
-          product_createdby: req.user.userId,
-        }
-      ),
+      // success: "false",
+      metadata: await ProductServiceABC.findAllDraftForShop({
+        product_createdby: req.user.userId,
+      }),
+    }).send(res);
+  };
+
+  /**
+   * Get All Product Published For CreatedBy
+   * @param {Number} limit
+   * @param {Number} skip
+   * @return {JSON} res
+   */
+  getAllPublishedForCreatedBy = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Get Products Published Success",
+      metadata: await ProductServiceABC.findAllPublishedForShop({
+        product_createdby: req.user.userId,
+      }),
+    }).send(res);
+  };
+
+  searchProductByCreated = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Search Products Success",
+      metadata: await ProductServiceABC.searchProductByCreated({
+        keySearch: req.params.keySearch,
+      }),
     }).send(res);
   };
 }
