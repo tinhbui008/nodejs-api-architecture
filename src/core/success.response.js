@@ -8,8 +8,14 @@ const ReasonStatusCode = {
   CREATED: "Created",
 };
 
+const Success = {
+  FALSE: "false",
+  SUCCESS: "true",
+};
+
 class SuccessResponse {
   constructor({
+    success = Success.SUCCESS,
     message,
     statusCode = StatusCode.OK,
     reasonStatusCode = ReasonStatusCode.OK,
@@ -18,6 +24,7 @@ class SuccessResponse {
     this.message = !message ? reasonStatusCode : message;
     this.status = statusCode;
     this.metadata = metadata;
+    this.success = success;
   }
 
   send(res, header = {}) {
@@ -26,8 +33,8 @@ class SuccessResponse {
 }
 
 class OK extends SuccessResponse {
-  constructor({ message, metadata }) {
-    super({ message, metadata });
+  constructor({ message, metadata, success }) {
+    super({ message, metadata, success });
   }
 }
 
@@ -38,11 +45,11 @@ class CREATED extends SuccessResponse {
     statusCode = StatusCode.CREATED,
     reasonStatusCode = ReasonStatusCode.CREATED,
     metadata,
+    success,
   }) {
-    super({ message, statusCode, reasonStatusCode, metadata });
-    this.options = options
+    super({ message, statusCode, reasonStatusCode, metadata, success });
+    this.options = options;
   }
 }
 
-
-module.exports = {OK, CREATED, SuccessResponse}
+module.exports = { OK, CREATED, SuccessResponse };

@@ -10,6 +10,7 @@ const swaggerSpec = require("../swagger");
 router.use(apiKey)
 router.use(permission('000'));
 router.use("/v1/api/product", require("./product"));
+router.use("/v1/api/blog", require("./blog"));
 router.use("/v1/api", require("./access"));
 // router.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
