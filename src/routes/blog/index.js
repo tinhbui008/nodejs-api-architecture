@@ -7,7 +7,7 @@ const { authentication, authenticationV2 } = require("../../auth/authUtils");
 const router = exress.Router();
 
 // //authentication
-// router.use(authentication);
+router.use(authentication);
 
 //GET
 router.get(

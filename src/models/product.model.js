@@ -152,10 +152,9 @@ var furnitureSchema = new mongoose.Schema(
   }
 );
 
-//Export the model
 module.exports = {
   product: model(DOC_NAME, productSchema),
   clothing: model("Clothing", clothesSchema),
   electronic: model("Electronic", electronicSchema),
-  furniture: model("Furniture", furnitureSchema),
+  furniture: model("Furniture", furnitureSchema)
 };

@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const DOC_NAME = "Blog";
 const COLLECT_NAME = "Blogs";
 
-var userSchema = new Schema(
+var blogSchema = new Schema(
   {
     blog_name: {
       type: String,
@@ -31,12 +31,6 @@ var userSchema = new Schema(
       index: true,
       select: false,
     },
-    blog_type: {
-      type: String,
-      required: true,
-      enum: [""],
-      default: ["Sport"],
-    },
     blog_createdby: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -49,9 +43,17 @@ var userSchema = new Schema(
       type: String,
       required: true,
     },
+    blog_slug: {
+      type: String,
+    },
     blog_gallery: {
       type: Array,
       default: [],
+    },
+    blog_type: {
+      type: String,
+      required: true,
+      enum: ["Sport", "Health", "Tech"],
     },
   },
   {
@@ -60,4 +62,79 @@ var userSchema = new Schema(
   }
 );
 
-module.exports = model(DOC_NAME, userSchema);
+blogSchema.index({
+  blog_name: "text",
+  blog_description: "text",
+});
+
+blogSchema.pre("save", function (next) {
+  this.blog_slug = slugify(this.blog_name, { lower: true });
+  next();
+});
+
+var sportSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    blog_createdby: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+    collection: "Sport",
+  }
+);
+
+var healthSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    blog_createdby: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+    collection: "Sport",
+  }
+);
+
+var techSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    blog_createdby: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+    collection: "Sport",
+  }
+);
+
+module.exports = {
+  blog: model(DOC_NAME, blogSchema),
+  sport: model("Sport", sportSchema),
+  health: model("Health", healthSchema),
+  tech: model("Tech", techSchema),
+};
