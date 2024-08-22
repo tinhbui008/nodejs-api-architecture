@@ -13,6 +13,8 @@ const {
   findAllPublishedForShop,
   unPublishedProductByCreatedByAndProductId,
   searchProductByCreated,
+  findAll,
+  findById,
 } = require("../models/repositories/product.repo");
 
 class ProductFactory {
@@ -85,6 +87,25 @@ class ProductFactory {
     //   default:
     //     throw new BadRequestError(`Invalid product type:::: ${type}`);
     // }
+  }
+
+  static async findAll({
+    limit = 50,
+    sort = "ctime",
+    page = 1,
+    filter = { isPublished: true },
+  }) {
+    return await findAll({
+      limit,
+      sort,
+      page,
+      filter,
+      select: ["product_name", "product_thumb", "product_price"],
+    });
+  }
+
+  static async findById({ product_id }) {
+    return await findById({ product_id, unSelect: ["__v"] });
   }
 }
 

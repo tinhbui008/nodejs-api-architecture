@@ -8,6 +8,26 @@ const {
 } = require("../../models/product.model");
 
 const { Types } = require("mongoose");
+const { selectData, unSelectData } = require("../../ultils");
+const findAll = async ({ limit, sort, page, filter, select }) => {
+  const skip = (page - 1) * limit;
+
+  const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
+
+  const products = await product
+    .find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(selectData(select))
+    .lean();
+
+  return products;
+};
+
+const findById = async ({ product_id, unSelect }) => {
+  return product.findById(product_id).select(unSelectData(unSelect)).lean();
+};
 
 const findAllDraftForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
@@ -17,7 +37,7 @@ const findAllPublishedForShop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
 };
 
-const searchProductByCreated = async ({keySearch}) => {
+const searchProductByCreated = async ({ keySearch }) => {
   const regexSearch = new RegExp(keySearch);
   const results = await product
     .find(
@@ -99,4 +119,6 @@ module.exports = {
   publishedProductByCreatedByAndProductId,
   unPublishedProductByCreatedByAndProductId,
   searchProductByCreated,
+  findAll,
+  findById,
 };

@@ -5,19 +5,14 @@ const blogController = require("../../controllers/blog.controller");
 const { asyncHandler } = require("../../auth/checkAuth");
 const { authentication, authenticationV2 } = require("../../auth/authUtils");
 const router = exress.Router();
-
 // //authentication
-router.use(authentication);
-
-//GET
+router.use(authenticationV2);
+router.post("/", asyncHandler(blogController.createBlog));
 router.get(
-  "/getalldraftforcreatedby",
-  asyncHandler(blogController.getAllDraftForCreatedBy)
+  "/getallblogsbycreatedby",
+  asyncHandler(blogController.getAllBlogsByCreatedBy)
 );
-
-router.post(
-  "/",
-  asyncHandler(blogController.createBlog)
-);
+router.post("/publish/:id", asyncHandler(blogController.publishBlog));
+router.post("/unpublish/:id", asyncHandler(blogController.unPublishBlog));
 
 module.exports = router;

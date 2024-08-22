@@ -1,12 +1,16 @@
 "use strict";
 const { blog, sport, health, tech } = require("../models/blog.model");
 const { BadRequestError } = require("../core/error.response");
+const {
+  publishBlog,
+  unPublishBlog,
+  findAllBlogDraftByCreatedBy,
+} = require("../models/repositories/blog.repo");
 
 class BlogFactory {
   static blogRegistry = {};
 
   static registerBlogType(type, classRef) {
-    console.log(`registerBlogType::::${type} ----- ${classRef}`);
     BlogFactory.blogRegistry[type] = classRef;
   }
 
@@ -15,7 +19,8 @@ class BlogFactory {
     limit = 50,
     skip = 0,
   }) {
-    return blog_createdby;
+    const query = { blog_createdby, isPublished: true };
+    return await findAllBlogDraftByCreatedBy({ query, limit, skip });
   }
 
   static async createBlog(type, payload) {
@@ -24,10 +29,20 @@ class BlogFactory {
     if (!blogClass) throw new BadRequestError(`Invalid blog type ${type}`);
 
     return new blogClass(payload).createBlog();
+  }
 
-    // console.log(`start create blog`);
-    // console.log(payload);
-    // return new Blog(payload).createBlog();
+  static async publishBlog({ blog_createdby, blog_id }) {
+    return await publishBlog({
+      blog_createdby,
+      blog_id,
+    });
+  }
+
+  static async unPublishBlog({ blog_createdby, blog_id }) {
+    return await unPublishBlog({
+      blog_createdby,
+      blog_id,
+    });
   }
 }
 

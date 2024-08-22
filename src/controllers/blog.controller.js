@@ -4,13 +4,7 @@ const BlogService = require("../services/blog.service");
 const { CREATED, OK, SuccessResponse } = require("../core/success.response");
 
 class BlogController {
-  /**
-   * Get All Product Draft For CreatedBy
-   * @param {Number} limit
-   * @param {Number} skip
-   * @return {JSON} res
-   */
-  getAllDraftForCreatedBy = async (req, res, next) => {
+  getAllBlogsByCreatedBy = async (req, res, next) => {
     new SuccessResponse({
       message: "Get Blogs Draft Success",
       metadata: await BlogService.findAllDraftForCreatedBy({
@@ -25,6 +19,26 @@ class BlogController {
       metadata: await BlogService.createBlog(req.body.blog_type, {
         ...req.body,
         blog_createdby: req.user.userId,
+      }),
+    }).send(res);
+  };
+
+  publishBlog = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Publish blog success",
+      metadata: await BlogService.publishBlog({
+        blog_createdby: req.user.userId,
+        blog_id: req.params.id,
+      }),
+    }).send(res);
+  };
+
+  unPublishBlog = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Unpublish blog success",
+      metadata: await BlogService.unPublishBlog({
+        blog_createdby: req.user.userId,
+        blog_id: req.params.id,
       }),
     }).send(res);
   };

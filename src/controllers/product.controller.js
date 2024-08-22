@@ -77,6 +77,22 @@ class ProductController {
       }),
     }).send(res);
   };
+
+  getAll = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Get Products Draft Success",
+      metadata: await ProductServiceABC.findAll(req.query),
+    }).send(res);
+  };
+
+  getById = async (req, res, next) => {
+    new SuccessResponse({
+      message: "Get Products Draft Success",
+      metadata: await ProductServiceABC.findById({
+        product_id: req.params.product_id,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new ProductController();
